@@ -1,5 +1,15 @@
 {
   "dependencies": {
     "express": "^4.18.2"
-  }
+  },
+  "name": "exo-02",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
