@@ -18,14 +18,20 @@ exports.createCoworking = (req, res) => {
 }
 
 exports.findAllCoworkings = (req, res) => {
+    const search = req.query.search || ""
     const limit = req.query.limit || 0
-    const msg = `La liste des coworkings a bien été retournée.`
 
     const { Op } = require("sequelize");
     CoworkingModel.findAll({
-        where: {superficy: {[Op.gte]: limit}}
+        where: {
+            [Op.and]: [
+                {name: {[Op.like]: `%${search}%`}},
+                {superficy: {[Op.gte]: limit}}
+            ]
+        }
         })
         .then((el) => {
+            const msg = `La liste des coworkings a bien été retournée.`
             res.json({ message: msg, data: el })
         })
         .catch(error => {console.error(`Erreur findAllCoworkings  ${error}`)})  
@@ -44,25 +50,24 @@ exports.findCoworkingByPk = (req, res) => {
 
 exports.updateCoworking = (req, res) => {
     const id = req.params.id
-    const updateCoworking = req.body;
-    const msg = `L'espace de coworking n°${id} a bien été modifié.`
 
-    CoworkingModel.update(updateCoworking,{
+    CoworkingModel.update(req.body,{
         where: {id: id}
-        })
-        .then((el) => {
-            res.json({ message: msg, data: el })
-        })
+    })
+    .then((el) => {
+        const msg = `L'espace de coworking n°${id} a bien été modifié.`
+        res.json({ message: msg, data: el })
+    })
 }
 
 exports.deleteCoworking = (req, res) => {
     const id = req.params.id
-    const msg = `L'espace de coworking n°${id} a bien été supprimé.`
 
-    CoworkingModel.destroy({
+    return CoworkingModel.destroy({
         where: {id: id}
     })
     .then((el) => {
+        const msg = `L'espace de coworking n°${id} a bien été supprimé.`
         res.json({ message: msg, data: el })
     })
 }
