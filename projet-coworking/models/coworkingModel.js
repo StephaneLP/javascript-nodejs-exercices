@@ -11,21 +11,38 @@ const Coworking = (sequelize, DataTypes) => {
         name: {
           type: DataTypes.STRING,
           allowNull: false,
+          unique: {msg: "Le nom est déjà pris !"},
+          validate: {
+            notEmpty :{msg: "Le champ nom ne peut pas être vide !"}
+          },
         },
         picture: {
             type: DataTypes.STRING,
         },
         superficy: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            validate : {
+              isNumeric: {msg: "La superficie doit être numérique !"}
+            },
         },
         capacity: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            validate : {
+              isNumeric: {msg: "La superficie doit être numérique !"}
+            },
         },
         price: {
             type: DataTypes.JSON,
-            allowNull: false
+            allowNull: false,
+            validate: {
+              isPriceValide(value) {
+                if(value.hour === null && value.day === null && value.month === null) {
+                  throw new Error("Au moins un prix doit être renseigné !")
+                }
+              }
+            }
         },
         address: {
             type: DataTypes.JSON,

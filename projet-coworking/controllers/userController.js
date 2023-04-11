@@ -1,20 +1,21 @@
-const coworkings = require('../db/mock-coworkings');
-const {CoworkingModel} = require('../db/sequelize');
+const {UserModel} = require('../db/sequelize');
 const { Op, UniqueConstraintError, ValidationError } = require("sequelize");
 
-exports.createCoworking = (req, res) => {
-    const newCoworking = req.body;
+exports.createUser = (req, res) => {
+    const newUser = req.body;
 
-    CoworkingModel.create({
-        name: newCoworking.name,
-        price: newCoworking.price,
-        address: newCoworking.address,
-        picture: newCoworking.picture,
-        superficy: newCoworking.superficy,
-        capacity: newCoworking.capacity,
+    UserModel.create({
+        name: User.username,
+        // bcrypt.hash("mdp",10)
+        // .then((hash) => {
+        //             UserModel.create({
+        //                 username: "Geof",
+        //                 password: hash,
+        //             })
+        password: User.password,
     })
     .then((el) => {
-        const msg = `Un espace de coworking a bien été ajouté.`
+        const msg = `Un user a bien été ajouté.`
         res.json({ message: msg, data: newCoworking})
     })
     .catch(error => {
@@ -28,44 +29,40 @@ exports.createCoworking = (req, res) => {
     })
 }
 
-exports.findAllCoworkings = (req, res) => {
+exports.findAllUsers = (req, res) => {
     const search = req.query.search || ""
-    const limit = req.query.limit || 0
 
-    CoworkingModel.findAll({
-        where: {
-            [Op.and]: [
-                {name: {[Op.like]: `%${search}%`}},
-                {superficy: {[Op.gte]: limit}}
-            ]
-        }
+console.log("hello")
+
+    UserModel.findAll({
+        where: {username: {[Op.like]: `%${search}%`}},
         })
         .then((el) => {
-            const msg = `La liste des coworkings a bien été retournée.`
+            const msg = `La liste des users a bien été retournée.`
             res.json({ message: msg, data: el })
         })
         .catch(error => {console.error(`Erreur findAllCoworkings  ${error}`)})  
 }
 
-exports.findCoworkingByPk = (req, res) => {
+exports.findUserByPk = (req, res) => {
     const id = req.params.id
-    const msg = `L'espace de coworking n°${id} a bien été retourné.`
+    const msg = `Le user n°${id} a bien été retourné.`
 
-    CoworkingModel.findByPk(id)
+    UserModel.findByPk(id)
         .then((el) => {
-            res.json(el != null ? { data: el } : "Le coworking n'existe pas")
+            res.json(el != null ? { data: el } : "Le user n'existe pas")
         })
         .catch(() => res.json("Erreur findCoworkingByPk"))
 }
 
-exports.updateCoworking = (req, res) => {
+exports.updateUser = (req, res) => {
     const id = req.params.id
 
-    CoworkingModel.update(req.body,{
+    UserModel.update(req.body,{
         where: {id: id}
     })
     .then((el) => {
-        const msg = `L'espace de coworking n°${id} a bien été modifié.`
+        const msg = `Le user n°${id} a bien été modifié.`
         res.json({ message: msg, data: el })
     })
     .catch(error => {
@@ -79,14 +76,14 @@ exports.updateCoworking = (req, res) => {
     })
 }
 
-exports.deleteCoworking = (req, res) => {
+exports.deleteUser = (req, res) => {
     const id = req.params.id
 
-    return CoworkingModel.destroy({
+    return UserModel.destroy({
         where: {id: id}
     })
     .then((el) => {
-        const msg = `L'espace de coworking n°${id} a bien été supprimé.`
+        const msg = `Le user n°${id} a bien été supprimé.`
         res.json({ message: msg, data: el })
     })
 }
