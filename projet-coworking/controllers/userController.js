@@ -1,32 +1,32 @@
+const bcrypt = require("bcrypt")
 const {UserModel} = require('../db/sequelize');
 const { Op, UniqueConstraintError, ValidationError } = require("sequelize");
 
 exports.createUser = (req, res) => {
     const newUser = req.body;
 
-    UserModel.create({
-        name: User.username,
-        // bcrypt.hash("mdp",10)
-        // .then((hash) => {
-        //             UserModel.create({
-        //                 username: "Geof",
-        //                 password: hash,
-        //             })
-        password: User.password,
-    })
-    .then((el) => {
-        const msg = `Un user a bien été ajouté.`
-        res.json({ message: msg, data: newCoworking})
-    })
-    .catch(error => {
-        if(error instanceof UniqueConstraintError || error instanceof ValidationError){
-            return res.status(400).json({ message: error.message, data: error })    
-        }
-        else {
-            const msg = "test"
-            return res.status(500).json({ message: error.message, data: error })    
-        }
-    })
+    bcrypt.hash(newUser.password,10)
+        .then((hash) => {
+            UserModel.create({
+                username: newUser.username,
+                password: hash,
+                roles: ["user"]
+            })
+            .then((el) => {
+                const msg = `Un user a bien été ajouté.`
+                res.json({ message: msg, data: newUser})
+            })
+            .catch(error => {
+                if(error instanceof UniqueConstraintError || error instanceof ValidationError){
+                    return res.status(400).json({ message: error.message, data: error })    
+                }
+                else {
+                    const msg = "test"
+                    return res.status(500).json({ message: error.message, data: error })    
+                }
+            })
+        })
+        .catch((error) => console.log(error))
 }
 
 exports.findAllUsers = (req, res) => {

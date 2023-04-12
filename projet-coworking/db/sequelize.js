@@ -30,6 +30,7 @@ const initDb = () => {
                     UserModel.create({
                         username: "Steph",
                         password: hash,
+                        roles: ["admin"]
                     })
             })
             .catch((error) => console.log(error))
@@ -39,6 +40,7 @@ const initDb = () => {
                     UserModel.create({
                         username: "Geof",
                         password: hash,
+                        roles: ["user"]
                     })
             })
             .catch((error) => console.log(error))            
