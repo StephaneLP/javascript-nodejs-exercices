@@ -1,5 +1,5 @@
 const coworkings = require('../db/mock-coworkings');
-const {CoworkingModel} = require('../db/sequelize');
+const {CoworkingModel, ReviewModel} = require('../db/sequelize');
 const { Op, UniqueConstraintError, ValidationError } = require("sequelize");
 
 exports.createCoworking = (req, res) => {
@@ -38,7 +38,25 @@ exports.findAllCoworkings = (req, res) => {
                 {name: {[Op.like]: `%${search}%`}},
                 {superficy: {[Op.gte]: limit}}
             ]
-        }
+        },
+        })
+        .then((el) => {
+            const msg = `La liste des coworkings a bien été retournée.`
+            res.json({ message: msg, data: el })
+        })
+        .catch(error => {console.error(`Erreur findAllCoworkings  ${error}`)})  
+}
+
+exports.findAllCoworkingsWithReview = (req, res) => {
+    const minRating = req.query.min || 1
+
+    CoworkingModel.findAll({
+        include:{
+            model: ReviewModel,
+            where: {
+                rating: {[Op.gte]: minRating}
+            },            
+        } ,
         })
         .then((el) => {
             const msg = `La liste des coworkings a bien été retournée.`

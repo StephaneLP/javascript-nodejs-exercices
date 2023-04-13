@@ -9,6 +9,11 @@ router
     .post(coworkingController.createCoworking)
 
 router
+    .route('/withReview')
+    .get(coworkingController.findAllCoworkingsWithReview)
+    .post(coworkingController.createCoworking)
+
+router
     .route('/:id')
     .get(coworkingController.findCoworkingByPk)
     .put(authController.protect, coworkingController.updateCoworking)
